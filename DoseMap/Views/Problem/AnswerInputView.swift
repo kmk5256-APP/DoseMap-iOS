@@ -6,39 +6,57 @@ struct AnswerInputView: View {
     let accent: Color
     let isEnabled: Bool
     
+    @FocusState private var isFocused: Bool
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             Text("YOUR ANSWER")
-                .font(.system(size: 12, weight: .bold, design: .rounded))
+                .font(.system(size: 11, weight: .bold, design: .rounded))
                 .foregroundStyle(accent)
-                .tracking(1.2)
+                .tracking(1.4)
             
             HStack(spacing: 12) {
                 TextField("0", text: $answer)
                     .keyboardType(.decimalPad)
-                    .font(.system(size: 32, weight: .semibold, design: .rounded))
+                    .font(.system(size: 34, weight: .semibold, design: .rounded))
                     .foregroundStyle(.white)
                     .multilineTextAlignment(.center)
-                    .padding(.vertical, 16)
-                    .padding(.horizontal, 20)
+                    .padding(.vertical, 18)
+                    .padding(.horizontal, 16)
                     .background(
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .fill(Color.white.opacity(0.08))
+                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                            .fill(Color.white.opacity(0.07))
                             .overlay(
-                                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                    .stroke(accent.opacity(0.4), lineWidth: 1.5)
+                                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                    .stroke(
+                                        isFocused ? accent.opacity(0.7) : accent.opacity(0.35),
+                                        lineWidth: isFocused ? 2 : 1.5
+                                    )
                             )
                     )
+                    .focused($isFocused)
                     .disabled(!isEnabled)
+                    .animation(.easeInOut(duration: 0.2), value: isFocused)
                 
                 Text(unit)
-                    .font(.system(size: 18, weight: .semibold, design: .rounded))
-                    .foregroundStyle(.white.opacity(0.8))
-                    .frame(width: 90)
+                    .font(.system(size: 17, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.85))
+                    .frame(minWidth: 78)
                     .padding(.vertical, 20)
+                    .padding(.horizontal, 12)
                     .background(
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .fill(accent.opacity(0.2))
+                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                            .fill(
+                                LinearGradient(
+                                    colors: [accent.opacity(0.28), accent.opacity(0.15)],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                    .stroke(accent.opacity(0.35), lineWidth: 1)
+                            )
                     )
             }
         }
