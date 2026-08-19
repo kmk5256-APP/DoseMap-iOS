@@ -7,81 +7,116 @@ struct RegionNodeView: View {
     let onTap: () -> Void
     
     @State private var isPressed = false
-    @State private var glow = false
+    @State private var glowPulse = false
+    
+    private var masteryProgress: Double {
+        Double(stars) / 3.0
+    }
     
     var body: some View {
         Button(action: onTap) {
-            VStack(spacing: 8) {
+            VStack(spacing: 10) {
                 ZStack {
-                    // Outer glow ring when unlocked
+                    // Soft outer ambient glow
                     if isUnlocked {
                         Circle()
-                            .stroke(region.color.opacity(0.4), lineWidth: 3)
-                            .frame(width: 78, height: 78)
-                            .scaleEffect(glow ? 1.15 : 1.0)
-                            .opacity(glow ? 0.0 : 0.6)
-                            .animation(.easeOut(duration: 1.8).repeatForever(autoreverses: false), value: glow)
+                            .fill(region.color.opacity(0.25))
+                            .frame(width: 92, height: 92)
+                            .blur(radius: 12)
+                            .scaleEffect(glowPulse ? 1.12 : 1.0)
+                            .opacity(glowPulse ? 0.5 : 0.8)
                     }
                     
-                    // Main node
+                    // Progress ring (shows mastery)
+                    if isUnlocked {
+                        ProgressRing(
+                            progress: masteryProgress,
+                            color: region.color,
+                            lineWidth: 3.5,
+                            size: 78
+                        )
+                    } else {
+                        Circle()
+                            .stroke(Color.white.opacity(0.12), lineWidth: 2)
+                            .frame(width: 78, height: 78)
+                    }
+                    
+                    // Main circular node
                     Circle()
                         .fill(
                             LinearGradient(
                                 colors: isUnlocked ? [
                                     region.color,
-                                    region.color.opacity(0.7)
+                                    region.color.opacity(0.75)
                                 ] : [
-                                    Color.gray.opacity(0.4),
-                                    Color.gray.opacity(0.25)
+                                    Color(white: 0.28),
+                                    Color(white: 0.18)
                                 ],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
                             )
                         )
-                        .frame(width: 64, height: 64)
-                        .shadow(color: isUnlocked ? region.color.opacity(0.5) : .clear, radius: 12, y: 4)
+                        .frame(width: 62, height: 62)
+                        .overlay(
+                            Circle()
+                                .stroke(
+                                    isUnlocked ? Color.white.opacity(0.25) : Color.white.opacity(0.08),
+                                    lineWidth: 1
+                                )
+                        )
+                        .shadow(
+                            color: isUnlocked ? region.color.opacity(0.55) : .clear,
+                            radius: 10,
+                            y: 4
+                        )
                     
                     // Icon
                     Image(systemName: region.icon)
-                        .font(.system(size: 26, weight: .semibold))
+                        .font(.system(size: 24, weight: .semibold))
                         .foregroundStyle(.white)
-                        .opacity(isUnlocked ? 1 : 0.4)
+                        .opacity(isUnlocked ? 1.0 : 0.35)
+                        .symbolRenderingMode(.hierarchical)
                     
-                    // Lock overlay
+                    // Lock badge
                     if !isUnlocked {
                         Image(systemName: "lock.fill")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundStyle(.white.opacity(0.8))
-                            .offset(x: 22, y: -22)
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundStyle(.white.opacity(0.9))
+                            .padding(5)
+                            .background(Circle().fill(Color.black.opacity(0.55)))
+                            .offset(x: 24, y: -24)
                     }
                 }
+                .frame(width: 92, height: 92)
                 
                 // Title + stars
-                VStack(spacing: 3) {
+                VStack(spacing: 4) {
                     Text(region.title)
                         .font(.system(size: 12, weight: .semibold, design: .rounded))
-                        .foregroundStyle(isUnlocked ? .white : .white.opacity(0.4))
+                        .foregroundStyle(isUnlocked ? .white : .white.opacity(0.38))
                         .lineLimit(1)
-                        .minimumScaleFactor(0.8)
+                        .minimumScaleFactor(0.75)
                     
-                    // Stars
-                    HStack(spacing: 2) {
+                    HStack(spacing: 3) {
                         ForEach(0..<3, id: \.self) { i in
                             Image(systemName: i < stars ? "star.fill" : "star")
-                                .font(.system(size: 9))
-                                .foregroundStyle(i < stars ? Color.yellow : .white.opacity(0.25))
+                                .font(.system(size: 9, weight: .semibold))
+                                .foregroundStyle(i < stars ? Color.yellow : Color.white.opacity(0.22))
                         }
                     }
                 }
-                .frame(width: 90)
+                .frame(width: 96)
             }
-            .scaleEffect(isPressed ? 0.92 : 1.0)
+            .scaleEffect(isPressed ? 0.90 : 1.0)
+            .animation(.spring(response: 0.28, dampingFraction: 0.65), value: isPressed)
         }
         .buttonStyle(.plain)
         .disabled(!isUnlocked)
         .onAppear {
             if isUnlocked {
-                glow = true
+                withAnimation(.easeInOut(duration: 2.2).repeatForever(autoreverses: true)) {
+                    glowPulse = true
+                }
             }
         }
         .simultaneousGesture(

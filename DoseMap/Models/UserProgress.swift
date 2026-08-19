@@ -35,22 +35,30 @@ class UserProgressManager: ObservableObject {
         completedProblemIDs.insert(problem.id)
         totalProblemsSolved += 1
         
-        // Award star progress (max 3 per region)
-        let current = stars[problem.region] ?? 0
-        if current < 3 {
-            // Simple: every 2 unique problems in region = +1 star (capped)
-            let regionProblems = CalculationProblem.problems(for: problem.region)
-            let solvedInRegion = regionProblems.filter { completedProblemIDs.contains($0.id) }.count
-            let newStars = min(3, solvedInRegion / 2 + (solvedInRegion > 0 ? 1 : 0))
-            stars[problem.region] = max(current, newStars)
-        }
+        // Improved mastery: 1 star after first solve, 2 after ~half, 3 when most/all done
+        let regionProblems = CalculationProblem.problems(for: problem.region)
+        let solvedInRegion = regionProblems.filter { completedProblemIDs.contains($0.id) }.count
+        let totalInRegion = max(regionProblems.count, 1)
         
-        // Streak
+        let ratio = Double(solvedInRegion) / Double(totalInRegion)
+        var newStars = 0
+        if solvedInRegion >= 1 { newStars = 1 }
+        if ratio >= 0.45 || solvedInRegion >= 3 { newStars = 2 }
+        if ratio >= 0.8 || solvedInRegion >= 5 { newStars = 3 }
+        
+        let current = stars[problem.region] ?? 0
+        stars[problem.region] = max(current, newStars)
+        
+        // Streak tracking
         let calendar = Calendar.current
-        if let last = lastPracticeDate, calendar.isDateInToday(last) {
-            // already practiced today
-        } else if let last = lastPracticeDate, calendar.isDateInYesterday(last) {
-            currentStreak += 1
+        if let last = lastPracticeDate {
+            if calendar.isDateInToday(last) {
+                // already counted today
+            } else if calendar.isDateInYesterday(last) {
+                currentStreak += 1
+            } else {
+                currentStreak = 1
+            }
         } else {
             currentStreak = 1
         }
@@ -65,7 +73,6 @@ class UserProgressManager: ObservableObject {
     }
     
     private func save() {
-        // Simple persistence
         if let data = try? JSONEncoder().encode(stars.mapKeys { $0.rawValue }) {
             defaults.set(data, forKey: "stars")
         }
@@ -91,7 +98,6 @@ class UserProgressManager: ObservableObject {
     }
 }
 
-// Helpers
 private extension Dictionary {
     func mapKeys<T>(_ transform: (Key) -> T) -> [T: Value] {
         var result: [T: Value] = [:]

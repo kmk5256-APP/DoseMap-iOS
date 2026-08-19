@@ -3,7 +3,6 @@ import SwiftUI
 struct PathConnectorView: View {
     @ObservedObject var progress: UserProgressManager
     
-    // Define connections between regions (from -> to)
     private let connections: [(RegionType, RegionType)] = [
         (.oral, .ivFlow),
         (.oral, .weight),
@@ -26,20 +25,36 @@ struct PathConnectorView: View {
                 var path = Path()
                 path.move(to: start)
                 
-                // Gentle curve
                 let mid = CGPoint(
-                    x: (start.x + end.x) / 2,
-                    y: (start.y + end.y) / 2 - 40
+                    x: (start.x + end.x) / 2 + CGFloat.random(in: -8...8),
+                    y: (start.y + end.y) / 2 - 48
                 )
                 path.addQuadCurve(to: end, control: mid)
                 
-                let bothUnlocked = progress.isUnlocked(from) && progress.isUnlocked(to)
-                let style = StrokeStyle(lineWidth: bothUnlocked ? 3.5 : 2, lineCap: .round, dash: bothUnlocked ? [] : [6, 6])
+                let unlocked = progress.isUnlocked(from) && progress.isUnlocked(to)
                 
+                // Glow layer for unlocked paths
+                if unlocked {
+                    context.stroke(
+                        path,
+                        with: .color(Color(red: 0.25, green: 0.75, blue: 0.9).opacity(0.25)),
+                        style: StrokeStyle(lineWidth: 8, lineCap: .round)
+                    )
+                }
+                
+                // Main path
                 context.stroke(
                     path,
-                    with: .color(bothUnlocked ? Color(red: 0.3, green: 0.75, blue: 0.85).opacity(0.7) : Color.white.opacity(0.15)),
-                    style: style
+                    with: .color(
+                        unlocked
+                        ? Color(red: 0.35, green: 0.82, blue: 0.95).opacity(0.85)
+                        : Color.white.opacity(0.12)
+                    ),
+                    style: StrokeStyle(
+                        lineWidth: unlocked ? 3.0 : 1.8,
+                        lineCap: .round,
+                        dash: unlocked ? [] : [5, 7]
+                    )
                 )
             }
         }
