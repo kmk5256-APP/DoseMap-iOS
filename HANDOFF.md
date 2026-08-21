@@ -17,7 +17,9 @@ The core experience is complete and the UI has been polished for a beautiful, pr
 - Improved star/mastery calculation
 - Missing `ProgressRing` component added
 
-**Still required before it is “one-click ready”:** create a real Xcode project and add the App Icon + Assets.
+The project now opens and builds directly, with a release icon, privacy manifest,
+stable progress identifiers, app-specific About/support links, and a Debug-only
+screenshot harness.
 
 ---
 
@@ -36,32 +38,33 @@ The core experience is complete and the UI has been polished for a beautiful, pr
 
 ## What is left (Prioritized)
 
-### 1. Make it open & build cleanly in Xcode (Required)
+### 1. Xcode project and build
 
-1. Create a new iOS App project in Xcode named `DoseMap` (SwiftUI, Swift).
-2. Delete the default `ContentView` and App files.
-3. Drag the entire `DoseMap/` folder into the project.
-4. Set deployment target to iOS 17.0+.
-5. Build and resolve any minor issues (should be minimal after this polish).
+- [x] `DoseMap.xcodeproj` and shared scheme created.
+- [x] iOS 17, iPhone-only, portrait configuration set.
+- [x] Simulator build completed on iPhone 17 Pro Max.
 
 ### 2. Assets
 
-- [ ] Create `Assets.xcassets`
-- [ ] Design and add App Icon (all sizes)
-- [ ] Set AccentColor
+- [x] Create `Assets.xcassets`
+- [x] Design and add an opaque 1024×1024 App Icon
+- [x] Set AccentColor
 
 ### 3. Content & Polish (optional but recommended)
 
 - [ ] Expand problem bank toward 60+
-- [ ] Add haptics on correct/incorrect
+- [ ] Add haptics on correct/incorrect in a later release
 - [ ] Test thoroughly on SE / standard / Pro Max sizes
-- [ ] Accessibility (VoiceOver labels)
+- [x] Add VoiceOver labels for map regions, locks, and numeric answer input
 
 ### 4. Launch prep
 
-- [ ] App Store screenshots + description
-- [ ] Bundle ID + App Store Connect
-- [ ] Simple privacy policy
+- [ ] Generate and visually inspect the five prepared screenshot states
+- [x] Listing, review notes, privacy answers, and age-rating guidance prepared
+- [x] App-specific support and privacy pages deployed and verified
+- [ ] Confirm live App Store review lanes are clear before creating the record
+- [ ] Register bundle ID, create the App Store Connect record, archive with
+      distribution signing, upload, attach, and submit
 
 ---
 
@@ -72,7 +75,7 @@ git clone https://github.com/kmk5256-APP/DoseMap-iOS.git
 cd DoseMap-iOS
 ```
 
-Then follow step 1 above in Xcode.
+Then open `DoseMap.xcodeproj` in Xcode.
 
 Main files:
 - `DoseMapApp.swift` — entry

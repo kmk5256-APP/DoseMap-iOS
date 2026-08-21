@@ -17,6 +17,7 @@ struct AnswerInputView: View {
             
             HStack(spacing: 12) {
                 TextField("0", text: $answer)
+                    .accessibilityLabel("Numeric answer in \(unit)")
                     .keyboardType(.decimalPad)
                     .font(.system(size: 34, weight: .semibold, design: .rounded))
                     .foregroundStyle(.white)

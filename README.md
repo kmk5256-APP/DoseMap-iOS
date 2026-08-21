@@ -41,7 +41,7 @@ Marketed to nursing students (NCLEX-RN / PN dosage calculations) and pharmacy st
 - Beautiful node designs with icons, progress rings, and glow effects
 
 ### Learning Engine
-- 60+ high-quality, exam-style problems with realistic meds and numbers
+- 25 focused launch problems with realistic educational scenarios
 - Free-text numeric answers + unit selection
 - Instant feedback with celebration animations on success
 - Full dimensional-analysis style step-by-step solutions
@@ -108,7 +108,7 @@ DoseMap/
    - Set deployment target to iOS 17.0.
    - Build & Run on simulator or device.
 
-Alternatively, the source is self-contained and ready to drop into any SwiftUI project.
+Alternatively, open the included `DoseMap.xcodeproj` and run the shared `DoseMap` scheme.
 
 ## Roadmap (Future)
 
@@ -118,7 +118,7 @@ Alternatively, the source is self-contained and ready to drop into any SwiftUI p
 - [ ] Apple Pencil support for handwritten practice
 - [ ] Share progress / study streaks
 - [ ] WatchOS companion for quick drills
-- [ ] Full accessibility audit + VoiceOver polish
+- [ ] Continue expanding VoiceOver and Dynamic Type coverage as new screens are added
 
 ## Marketing Angle for Students
 
