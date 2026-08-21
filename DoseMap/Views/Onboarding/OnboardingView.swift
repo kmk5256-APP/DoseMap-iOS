@@ -6,9 +6,9 @@ struct OnboardingView: View {
     @State private var page = 0
     
     let pages: [(title: String, subtitle: String, icon: String)] = [
-        ("Welcome to DoseMap", "The most beautiful way to master NCLEX & NAPLEX medication math.", "map.fill"),
+        ("Welcome to DoseMap", "Practice medication math through a focused, map-based learning journey.", "map.fill"),
         ("Explore the Map", "Every region is a calculation domain. Unlock new lands as you earn stars.", "point.topleft.down.to.point.bottomright.curvepath.fill"),
-        ("Learn the Right Way", "Dimensional analysis, unit tracking, and clear step-by-step solutions — the skills that actually matter on exam day.", "function"),
+        ("Learn Step by Step", "Build confidence with dimensional analysis, unit tracking, and worked explanations.", "function"),
         ("Ready to Chart Your Course?", "Start in Oral Lands or Conversion Crossroads. Your journey begins now.", "sailboat.fill")
     ]
     

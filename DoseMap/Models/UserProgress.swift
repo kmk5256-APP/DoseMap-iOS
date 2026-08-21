@@ -5,7 +5,7 @@ import Combine
 @MainActor
 class UserProgressManager: ObservableObject {
     @Published var stars: [RegionType: Int] = [:]
-    @Published var completedProblemIDs: Set<UUID> = []
+    @Published var completedProblemIDs: Set<String> = []
     @Published var currentStreak: Int = 0
     @Published var lastPracticeDate: Date? = nil
     @Published var hasCompletedOnboarding: Bool = false
@@ -71,12 +71,23 @@ class UserProgressManager: ObservableObject {
         hasCompletedOnboarding = true
         save()
     }
+
+#if DEBUG
+    func seedForScreenshots() {
+        let solved = Array(CalculationProblem.allProblems.prefix(14))
+        completedProblemIDs = Set(solved.map(\.id))
+        totalProblemsSolved = solved.count
+        stars = [.oral: 3, .conversion: 3, .ivFlow: 2, .weight: 2, .drip: 1]
+        currentStreak = 7
+        hasCompletedOnboarding = true
+    }
+#endif
     
     private func save() {
         if let data = try? JSONEncoder().encode(stars.mapKeys { $0.rawValue }) {
             defaults.set(data, forKey: "stars")
         }
-        defaults.set(Array(completedProblemIDs.map { $0.uuidString }), forKey: "completed")
+        defaults.set(Array(completedProblemIDs), forKey: "completed")
         defaults.set(currentStreak, forKey: "streak")
         defaults.set(lastPracticeDate, forKey: "lastDate")
         defaults.set(hasCompletedOnboarding, forKey: "onboarding")
@@ -89,7 +100,10 @@ class UserProgressManager: ObservableObject {
             stars = dict.compactMapKeys { RegionType(rawValue: $0) }
         }
         if let ids = defaults.array(forKey: "completed") as? [String] {
-            completedProblemIDs = Set(ids.compactMap { UUID(uuidString: $0) })
+            // Older prerelease builds stored random UUIDs that could never match
+            // after relaunch. Only retain IDs from the stable current question bank.
+            let validIDs = Set(CalculationProblem.allProblems.map(\.id))
+            completedProblemIDs = Set(ids).intersection(validIDs)
         }
         currentStreak = defaults.integer(forKey: "streak")
         lastPracticeDate = defaults.object(forKey: "lastDate") as? Date

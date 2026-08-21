@@ -8,6 +8,7 @@ struct LearningMapView: View {
     @State private var scale: CGFloat = 0.82
     @State private var offset: CGSize = .zero
     @State private var lastOffset: CGSize = .zero
+    @State private var showingAbout = false
     
     private let mapSize = CGSize(width: 1000, height: 1100)
     
@@ -76,6 +77,18 @@ struct LearningMapView: View {
                         }
                         
                         Spacer()
+
+                        Button {
+                            showingAbout = true
+                        } label: {
+                            Image(systemName: "info.circle.fill")
+                                .font(.system(size: 22, weight: .semibold))
+                                .foregroundStyle(.white.opacity(0.85))
+                                .frame(width: 44, height: 44)
+                                .background(.ultraThinMaterial, in: Circle())
+                        }
+                        .accessibilityLabel("About DoseMap")
+                        .padding(.trailing, progress.currentStreak > 0 ? 10 : 0)
                         
                         if progress.currentStreak > 0 {
                             HStack(spacing: 5) {
@@ -128,7 +141,13 @@ struct LearningMapView: View {
                         )
                         .padding(.bottom, 28)
                 }
+                .frame(width: geo.size.width, height: geo.size.height)
             }
+            .frame(width: geo.size.width, height: geo.size.height)
+            .clipped()
+        }
+        .sheet(isPresented: $showingAbout) {
+            AboutView()
         }
     }
     

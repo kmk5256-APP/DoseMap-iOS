@@ -1,7 +1,8 @@
 import Foundation
 
 struct CalculationProblem: Identifiable, Codable {
-    let id: UUID
+    /// Stable across launches so solved-problem progress survives an app restart.
+    let id: String
     let region: RegionType
     let question: String
     let correctAnswer: Double
@@ -21,7 +22,7 @@ struct CalculationProblem: Identifiable, Codable {
         difficulty: Int = 1,
         tolerance: Double = 0.1
     ) {
-        self.id = UUID()
+        self.id = "\(region.rawValue)|\(question)"
         self.region = region
         self.question = question
         self.correctAnswer = correctAnswer

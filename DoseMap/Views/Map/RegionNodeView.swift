@@ -112,6 +112,9 @@ struct RegionNodeView: View {
         }
         .buttonStyle(.plain)
         .disabled(!isUnlocked)
+        .accessibilityLabel(region.title)
+        .accessibilityValue(isUnlocked ? "\(stars) of 3 mastery stars" : "Locked, requires \(region.type.requiredStarsToUnlock) stars")
+        .accessibilityHint(isUnlocked ? "Opens practice for this region" : "Complete earlier regions to unlock")
         .onAppear {
             if isUnlocked {
                 withAnimation(.easeInOut(duration: 2.2).repeatForever(autoreverses: true)) {

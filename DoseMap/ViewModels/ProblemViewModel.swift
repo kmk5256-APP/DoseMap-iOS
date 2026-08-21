@@ -53,6 +53,6 @@ class ProblemViewModel: ObservableObject {
     }
     
     var hasMoreProblems: Bool {
-        currentIndex < problemsInRegion.count - 1 || (currentProblem != nil && currentIndex < problemsInRegion.count)
+        currentIndex < problemsInRegion.count - 1
     }
 }
